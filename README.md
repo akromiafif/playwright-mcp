@@ -427,24 +427,7 @@ Then('I should see a locked out error message', async ({ loginPage }) => {
 
 ### 4. End-to-End Checkout
 Validates the complex interaction of adding items, filling forms, and completing a purchase.
-
----
-
-## 10. What's Next? (Integrations)
-
-The power of MCP is that it can connect to *multiple* sources of truth, not just the browser.
-
-### Syncing with Confluence / Jira
-Since you have test cases in Confluence, we can extend this workflow to be even more powerful:
-
-1.  **Add Confluence MCP**: Install the `@modelcontextprotocol/server-confluence` (or similar) to give the AI access to your wiki.
-2.  **Direct Prompting**: You can prompt: *"Read the test cases from the 'Checkout Requirements' page and generate the corresponding Feature files."*
-3.  **The "Unified" Workflow**:
-    *   **Source**: Confluence Page (Requirements) via **Confluence MCP**.
-    *   **Translation**: AI converts human text -> Gherkin Feature Files.
-    *   **Execution**: AI implements the code via **Playwright MCP**.
-
-This turns your static documentation into executable tests automatically, ensuring your code never drifts from your requirements!
+![Checkout Flow Scenario](assets/test-report-checkout-flow.png)
 
 <details>
 <summary><strong>View Code: Checkout Logic</strong></summary>
@@ -476,3 +459,20 @@ async fillInformation(firstName: string, lastName: string, zip: string) {
 }
 ```
 </details>
+---
+
+## 10. What's Next? (Integrations)
+
+The power of MCP is that it can connect to *multiple* sources of truth, not just the browser.
+
+### Syncing with Confluence / Jira
+Since you have test cases in Confluence, we can extend this workflow to be even more powerful:
+
+1.  **Add Confluence MCP**: Install the `@modelcontextprotocol/server-confluence` (or similar) to give the AI access to your wiki.
+2.  **Direct Prompting**: You can prompt: *"Read the test cases from the 'Checkout Requirements' page and generate the corresponding Feature files."*
+3.  **The "Unified" Workflow**:
+    *   **Source**: Confluence Page (Requirements) via **Confluence MCP**.
+    *   **Translation**: AI converts human text -> Gherkin Feature Files.
+    *   **Execution**: AI implements the code via **Playwright MCP**.
+
+This turns your static documentation into executable tests automatically, ensuring your code never drifts from your requirements!
