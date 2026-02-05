@@ -14,7 +14,24 @@ Instead of guessing selectors or asking you to copy-paste HTML, the AI explicitl
 
 ---
 
-## 2. Installation & Setup
+## 2. Why Playwright MCP? (A Comparison)
+
+Traditional coding assistants are blind; they only see your code. Playwright MCP gives the AI "eyes" to see the actual application.
+
+| Feature | ❌ Traditional AI / Manual | ✅ Playwright MCP |
+| :--- | :--- | :--- |
+| **Context** | AI guesses based on file names or user description. | AI **sees** the real page structure via snapshots. |
+| **Selectors** | Often uses fragile XPaths or CSS changes. | Prioritizes engineering-safe attributes (`data-test`, `id`). |
+| **Verification** | "Write and Pray" (Run code to see if it fails). | **"Interact then Write"** (AI logs in and verifies flow first). |
+| **Effort** | User must copy-paste HTML specific parts to AI. | AI explores the entire DOM autonomously. |
+
+### Real-World Example: "Refactoring a Login Page"
+*   **Without MCP**: You change the login button's class from `.btn-blue` to `.btn-green`. Your old AI-generated test (`page.locator('.btn-blue')`) breaks.
+*   **With MCP**: The AI inspects the page, ignores the class change, and confirms the `data-test="login-button"` is still present. It writes code that is immune to visual refactors.
+
+---
+
+## 3. Installation & Setup
 
 To use Playwright with an AI agent via MCP, you need to run the MCP server.
 
@@ -50,7 +67,7 @@ Once configured, the `browser_*` tools (navigate, click, snapshot, etc.) will be
 
 ---
 
-## 3. Understanding BDD (Behavior Driven Development)
+## 4. Understanding BDD (Behavior Driven Development)
 
 We implemented a BDD framework using `playwright-bdd`.
 
@@ -72,7 +89,7 @@ graph TD
 
 ---
 
-## 4. The Workflow: From Request to Code
+## 5. The Workflow: From Request to Code
 
 Here is the exact step-by-step process we used to build the SauceDemo suite.
 
@@ -195,7 +212,7 @@ graph LR
 
 ---
 
-## 5. Sample Code Generated via MCP
+## 6. Sample Code Generated via MCP
 
 Here is a more complex example: **The Checkout Flow**. This demonstrates how the AI handles forms, multiple interactions, and assertions.
 
@@ -275,7 +292,7 @@ Scenario: Complete Checkout Flow
 
 ---
 
-## 6. Deep Dive: Architecture in Action
+## 7. Deep Dive: Architecture in Action
 
 This section shows how a **single user action** (Login) is architected across the three layers.
 
@@ -330,7 +347,7 @@ export class LoginPage {
 
 ---
 
-## 7. Best Practices & Troubleshooting
+## 8. Best Practices & Troubleshooting
 
 ### Best Practices for AI Agents
 1.  **Use Snapshots, Not HTML**: Always prefer `browser_snapshot` over reading raw HTML. It is faster, less token-intensive, and provides a cleaner view of interactive elements.
@@ -344,7 +361,7 @@ export class LoginPage {
 
 ---
 
-## Test Results
+## 9. Test Results
 
 Here are the actual execution results from our Playwright BDD suite.
 
@@ -410,7 +427,24 @@ Then('I should see a locked out error message', async ({ loginPage }) => {
 
 ### 4. End-to-End Checkout
 Validates the complex interaction of adding items, filling forms, and completing a purchase.
-![Checkout Flow Scenario](assets/test-report-checkout-flow.png)
+
+---
+
+## 10. What's Next? (Integrations)
+
+The power of MCP is that it can connect to *multiple* sources of truth, not just the browser.
+
+### Syncing with Confluence / Jira
+Since you have test cases in Confluence, we can extend this workflow to be even more powerful:
+
+1.  **Add Confluence MCP**: Install the `@modelcontextprotocol/server-confluence` (or similar) to give the AI access to your wiki.
+2.  **Direct Prompting**: You can prompt: *"Read the test cases from the 'Checkout Requirements' page and generate the corresponding Feature files."*
+3.  **The "Unified" Workflow**:
+    *   **Source**: Confluence Page (Requirements) via **Confluence MCP**.
+    *   **Translation**: AI converts human text -> Gherkin Feature Files.
+    *   **Execution**: AI implements the code via **Playwright MCP**.
+
+This turns your static documentation into executable tests automatically, ensuring your code never drifts from your requirements!
 
 <details>
 <summary><strong>View Code: Checkout Logic</strong></summary>
