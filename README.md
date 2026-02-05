@@ -344,9 +344,101 @@ export class LoginPage {
 
 ---
 
-## 8. Summary
+## Test Results
 
-1.  **AI + MCP** explores the site like a human user.
-2.  It **discovers** robust selectors (like `data-test`).
-3.  It **architects** the solution into BDD layers (Features, Steps, POM).
-4.  It **generates** standard, standalone Playwright code that you can own and run.
+Here are the actual execution results from our Playwright BDD suite.
+
+### 1. Overall Suite Pass
+The test runner executes all feature files, confirming that Login and Checkout flows work as expected.
+![All Test Flows](assets/test-report-all-flow.png)
+
+### 2. Successful Login
+Verifies that a comprehensive "happy path" works for the standard user, redirecting them to the inventory.
+![Successful Login Scenario](assets/test-report-successful-login-flow.png)
+
+<details>
+<summary><strong>View Code: Login Feature & POM</strong></summary>
+
+**Feature (`tests/features/login.feature`):**
+```gherkin
+Scenario: Successful Login
+    Given I am on the login page
+    When I login with valid credentials
+    Then I should see the inventory page
+```
+
+**Step Definition (`tests/steps/login.steps.ts`):**
+```typescript
+When('I login with valid credentials', async ({ loginPage }) => {
+    await loginPage.login('standard_user', 'secret_sauce');
+});
+```
+
+**Page Object (`tests/pages/LoginPage.ts`):**
+```typescript
+async login(username: string, password: string = 'secret_sauce') {
+    await this.usernameInput.fill(username);
+    await this.passwordInput.fill(password);
+    await this.loginButton.click();
+}
+```
+</details>
+
+### 3. Error Handling (Locked Out User)
+Ensures correct validation logic by attempting to login with a restricted account and asserting the error message.
+![Locked Out User Scenario](assets/test-report-locked-flow.png)
+
+<details>
+<summary><strong>View Code: Error Validation Logic</strong></summary>
+
+**Feature (`tests/features/login.feature`):**
+```gherkin
+Scenario: Locked Out User
+    Given I am on the login page
+    When I login with locked out user credentials
+    Then I should see a locked out error message
+```
+
+**Step Definition (`tests/steps/login.steps.ts`):**
+```typescript
+Then('I should see a locked out error message', async ({ loginPage }) => {
+    await expect(await loginPage.getErrorMessage()).toBeVisible();
+    await expect(await loginPage.getErrorMessage()).toContainText('Epic sadface: Sorry, this user has been locked out.');
+});
+```
+</details>
+
+### 4. End-to-End Checkout
+Validates the complex interaction of adding items, filling forms, and completing a purchase.
+![Checkout Flow Scenario](assets/test-report-checkout-flow.png)
+
+<details>
+<summary><strong>View Code: Checkout Logic</strong></summary>
+
+**Feature (`tests/features/checkout.feature`):**
+```gherkin
+Scenario: Complete Checkout Flow
+    When I add "Sauce Labs Backpack" to the cart
+    And I proceed to checkout from the cart
+    And I fill in my information with "John", "Doe", "12345"
+    And I finish the checkout
+    Then I should see the order success message
+```
+
+**Step Definition (`tests/steps/checkout.steps.ts`):**
+```typescript
+When('I fill in my information with {string}, {string}, {string}', async ({ checkoutPage }, firstName: string, lastName: string, zip: string) => {
+    await checkoutPage.fillInformation(firstName, lastName, zip);
+});
+```
+
+**Page Object (`tests/pages/CheckoutPage.ts`):**
+```typescript
+async fillInformation(firstName: string, lastName: string, zip: string) {
+    await this.firstNameInput.fill(firstName);
+    await this.lastNameInput.fill(lastName);
+    await this.postalCodeInput.fill(zip);
+    await this.continueButton.click();
+}
+```
+</details>
